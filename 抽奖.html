@@ -1,0 +1,202 @@
+<html>
+<title>民生加银抽奖-Developed by IT Team</title>
+<head>
+<meta name="keywords" content="ewCEO.com">
+<meta http-equiv=Content-Type content="text/html; charset=gb2312">
+<link rel="stylesheet" href="files/buttons.css">
+<style type="text/css">
+body {background-color:#99bbbb;}
+h1 {font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif; 
+    color:red; 
+    text-align:center; 
+    position:relative;
+    top:100px;}
+div {position:relative;
+    top:300px;
+    background-color:#99bbbb; clear:both; text-align:center;}
+</style>
+
+
+</head>
+<body onload="myinit()" background="">
+<script language="JavaScript" src='list.js'></script>
+<SCRIPT LANGUAGE="JavaScript">
+
+var timer
+function start(){
+    clearInterval(timer);
+    timer = setInterval('listflash()',50);    //50（毫秒）为变换间隔，越小变换的越快
+}
+
+function ok(){
+    clearInterval(timer);
+    document.getElementById("namelist").innerHTML="";
+    if(autorun == 0){
+        get_result();
+        }else{
+        get_result_auto();
+    }
+}
+
+function GetRnd(min,max){
+    return parseInt(Math.random()*(max-min+1));
+}
+
+var flag =0;
+function startorok(){
+	if(flag == 0)
+	{
+        if(auto_ary.length == 0){
+            document.getElementById("prize_title").innerHTML="抽奖结束";
+            document.getElementById("namelist").innerHTML = "恭喜各位获奖的朋友";
+            }else{
+		document.getElementById("button_start").innerHTML="好哒！";
+		start()
+		flag = 1;
+        }
+	}
+	else
+	{
+		document.getElementById("button_start").innerHTML="开始！";
+		ok();
+		flag =0;
+	}
+}	
+
+function listflash(){
+    var type_text = get_prize_title();
+	document.getElementById("prize_title").innerHTML=type_text;
+	document.getElementById("namelist").innerHTML=ary[GetRnd(0, mylength)];
+}
+ 
+
+var mylength=0
+//var ary
+
+function myinit(){
+	//ary = mytext.split("\n");
+	mylength = ary.length-1;
+	
+	//alert("init, ary: " + ary);
+    //alert("ary[0]="+ary[0]);
+	//alert("init, length: " + mylength);
+    
+    if(autorun == 1){
+        document.getElementById("div_option").style.display="none";
+    }
+
+}
+	
+function getlistfromarray(num){
+	var retary = new Array(num)
+	for (var i=0; i<num; i++)
+	{
+		if(mylength < 0)
+		{
+			alert("抽奖人名单已为空");
+			return 0;
+		}
+		
+		var x = GetRnd(0, mylength);
+		retary[i] = ary[x];
+		ary.splice(x, 1);
+		mylength -= 1;
+		//alert("ary:" + ary);
+	}
+	return retary;	
+}
+
+function get_result(){
+    var type_text = get_prize_title();
+	var num_obj = document.getElementById("select_num")
+	var num_index = num_obj.selectedIndex;
+	var num = num_obj.options[num_index].value;
+
+	var retary = getlistfromarray(num)
+	document.getElementById("namelist").innerHTML = "恭喜   " + retary + "   获得  "+type_text ;
+
+}
+
+var autorun=1;
+var auto_ary = [
+[3, 2, 5],
+[2, 2, 4],
+[1, 2, 2],
+[0, 2, 1]
+]
+//[a, b, c]代表a等奖，抽取b次，每次抽取c个
+
+
+function get_result_auto(){
+
+    if(auto_ary.length == 0){
+        document.getElementById("prize_title").innerHTML="抽奖结束";
+        document.getElementById("namelist").innerHTML = "恭喜各位获奖的朋友";
+    }
+    else
+    {
+        var type_text = get_prize_title();
+        var num = auto_ary[0][2];
+        //alert(auto_ary)
+
+        var retary = getlistfromarray(num)
+        document.getElementById("namelist").innerHTML = "恭喜   " + retary + "   获得  "+type_text ;
+        
+        auto_ary[0][1] -= 1;
+        if(auto_ary[0][1] == 0){
+            auto_ary.splice(0, 1);
+        }
+    }
+
+}
+
+function get_prize_title(){
+    var type_text;
+    if(autorun == 0){
+        var type_obj = document.getElementById("select_type")
+        var type_index = type_obj.selectedIndex;
+        type_text = type_obj.options[type_index].value;
+    }else{
+        var type_obj = document.getElementById("select_type")
+        var type_index = auto_ary[0][0]
+        type_text = type_obj.options[type_index].value;
+    }
+
+    return type_text;
+}
+
+
+</SCRIPT>
+
+
+<h1 id="prize_title">民生加银抽奖</h1>
+<h1 id="namelist">Ready~~~</h1>
+
+<div id="div_option">
+<select name="奖项" id="select_type">
+	<option value="特等奖">特等奖</option>
+	<option value="一等奖">一等奖</option>
+	<option value="二等奖">二等奖</option>
+	<option value="三等奖">三等奖</option>
+</select>
+
+
+<select name="抽取人数" id="select_num">
+	<option value="1">每次抽取1个</option>
+	<option value="2">每次抽取2个</option>
+	<option value="3">每次抽取3个</option>
+	<option value="4">每次抽取4个</option>
+	<option value="5">每次抽取5个</option>
+	<option value="6">每次抽取6个</option>
+	<option value="10">每次抽取10个</option>
+
+</select>
+</div>
+<div>
+<a class="button button-glow button-rounded button-raised button-primary" onClick="startorok()" id="button_start">Let's Go!</a>
+</div>
+
+
+
+</body>
+</html>
